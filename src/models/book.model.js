@@ -8,13 +8,9 @@ const bookSchema = mongoose.Schema({
   },
   isbn: {
     type: String,
-    required: true,
-  },
-  authorId: {
-    type: mongoose.Schema.Types.ObjectId,
     required: false,
   },
-  genreId: {
+  authorId: {
     type: mongoose.Schema.Types.ObjectId,
     required: false,
   },
@@ -25,11 +21,15 @@ const bookSchema = mongoose.Schema({
   },
   summary: {
     type: String,
-    required: false,
+    required: true,
   },
-  photoUrl: {
+  image: {
     type: String,
-    required: false,
+    required: true,
+  },
+  pdf: {
+    type: String,
+    required: true,
   },
   downloads: {
     type: Number,
