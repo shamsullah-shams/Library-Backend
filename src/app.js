@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -50,6 +51,7 @@ if (config.env === 'production') {
   app.use('/api/auth', authLimiter);
 }
 
+app.use('/images', express.static(path.join(__dirname, 'uploads')));
 // api api routes
 app.use('/api', routes);
 
