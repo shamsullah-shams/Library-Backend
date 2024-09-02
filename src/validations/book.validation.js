@@ -34,10 +34,11 @@ const updateBook = {
   body: Joi.object()
     .keys({
       name: Joi.string(),
-      isbn: Joi.number(),
+      isbn: Joi.string(),
       authorId: Joi.string().custom(objectId),
       summary: Joi.string(),
-      photoUrl: Joi.string().uri(),
+      image: Joi.string(),
+      pdf: Joi.string(),
     })
     .min(1),
 };

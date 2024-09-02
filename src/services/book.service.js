@@ -33,14 +33,12 @@ const getBookById = async (id) => {
 };
 
 /**
- * Update Book by id
- * @param {ObjectId} bookId
+ * Update Book
+ * @param {Object} book
  * @param {Object} updateBody
  * @returns {Promise<Book>}
  */
-const updateBook = async (bookId, updateBody) => {
-  const book = await getBookById(bookId);
-
+const updateBook = async (book, updateBody) => {
   Object.assign(book, updateBody);
   await book.save();
   return book;

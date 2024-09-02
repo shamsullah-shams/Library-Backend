@@ -25,8 +25,10 @@ const getBook = catchAsync(async (req, res) => {
 });
 
 const updateBook = catchAsync(async (req, res) => {
-  const user = await bookService.updateBookById(req.params.userId, req.body);
-  res.send(user);
+  const book = await bookService.getBookById(req.params.bookId);
+  if (!book) throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found');
+  const result = await bookService.updateBook(book, req.body);
+  return res.send(result);
 });
 
 const deleteBook = catchAsync(async (req, res) => {

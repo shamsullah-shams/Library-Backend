@@ -25,7 +25,16 @@ router
 router
   .route('/:bookId')
   .get(auth(), validate(bookValidation.getBook), bookController.getBook)
-  .patch(auth(), validate(bookValidation.updateBook), bookController.updateBook)
-  .delete(auth(), validate(bookValidation.deleteBook), bookController.deleteBook);
+  .delete(auth(), validate(bookValidation.deleteBook), bookController.deleteBook)
+  .patch(
+    auth(),
+    upload.fields([
+      { name: 'image', maxCount: 1 },
+      { name: 'pdf', maxCount: 1 },
+    ]),
+    attachFiles,
+    validate(bookValidation.updateBook),
+    bookController.updateBook
+  );
 
 module.exports = router;
