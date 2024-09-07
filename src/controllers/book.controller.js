@@ -10,10 +10,15 @@ const createBook = catchAsync(async (req, res) => {
 });
 
 const getBooks = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name', 'role']);
+  const { name } = req.query;
+  const filter = {};
+  if (name) {
+    filter.$or = [{ name: { $regex: name, $options: 'i' } }, { description: { $regex: name, $options: 'i' } }];
+  }
+
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookService.queryBooks(filter, options);
-  res.send(result);
+  return res.send(result);
 });
 
 const getBook = catchAsync(async (req, res) => {

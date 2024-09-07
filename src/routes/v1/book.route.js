@@ -10,7 +10,7 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(auth(), validate(bookValidation.getBooks), bookController.getBooks)
+  .get(validate(bookValidation.getBooks), bookController.getBooks)
   .post(
     auth(),
     upload.fields([
