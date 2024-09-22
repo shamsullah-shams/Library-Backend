@@ -3,25 +3,21 @@ const { toJSON, paginate } = require('./plugins');
 
 const borrowalSchema = mongoose.Schema(
   {
-    bookId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
-    memberId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
-    borrowedDate: {
-      type: Date,
-      required: false,
-    },
-    dueDate: {
-      type: Date,
-      required: false,
-    },
-    status: {
+    bookName: {
       type: String,
-      required: false,
+      required: true,
+    },
+    studentName: {
+      type: String,
+      required: true,
+    },
+    faculty: {
+      type: String,
+      required: true,
+    },
+    semester: {
+      type: Number,
+      required: true,
     },
   },
   {

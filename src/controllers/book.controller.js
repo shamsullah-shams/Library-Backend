@@ -21,14 +21,6 @@ const getBooks = catchAsync(async (req, res) => {
   return res.send(result);
 });
 
-const getBook = catchAsync(async (req, res) => {
-  const user = await bookService.getBookById(req.params.userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  res.send(user);
-});
-
 const updateBook = catchAsync(async (req, res) => {
   const book = await bookService.getBookById(req.params.bookId);
   if (!book) throw new ApiError(httpStatus.NOT_FOUND, 'Book Not Found');
@@ -46,7 +38,6 @@ const deleteBook = catchAsync(async (req, res) => {
 module.exports = {
   createBook,
   getBooks,
-  getBook,
   updateBook,
   deleteBook,
 };

@@ -6,7 +6,7 @@ const createBook = {
     name: Joi.string().required(),
     isbn: Joi.string(),
     authorId: Joi.string().custom(objectId),
-    summary: Joi.string().required(),
+    summary: Joi.string(),
     image: Joi.string().required(),
     pdf: Joi.string().required(),
   }),

@@ -19,8 +19,8 @@ const createBook = async (bookBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryBooks = async (filter, options) => {
-  const Books = await Book.paginate(filter, options);
-  return Books;
+  const books = await Book.paginate(filter, options);
+  return books;
 };
 
 /**

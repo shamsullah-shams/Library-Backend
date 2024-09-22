@@ -4,6 +4,8 @@ const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 const bookRoutes = require('./book.route');
+const backupRoutes = require('./backup.route');
+const borrowalRoutes = require('./borrowal.route');
 
 const router = express.Router();
 
@@ -19,6 +21,14 @@ const defaultRoutes = [
   {
     path: '/books',
     route: bookRoutes,
+  },
+  {
+    path: '/backup',
+    route: backupRoutes,
+  },
+  {
+    path: '/borrowals',
+    route: borrowalRoutes,
   },
 ];
 

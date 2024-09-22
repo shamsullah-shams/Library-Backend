@@ -24,7 +24,6 @@ router
 
 router
   .route('/:bookId')
-  .get(auth(), validate(bookValidation.getBook), bookController.getBook)
   .delete(auth(), validate(bookValidation.deleteBook), bookController.deleteBook)
   .patch(
     auth(),
