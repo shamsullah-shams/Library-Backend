@@ -17,7 +17,9 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === 'image/PNG' ||
     file.mimetype === 'image/jpeg' ||
     file.mimetype === 'image/JPEG' ||
-    file.mimetype === 'application/pdf'
+    file.mimetype === 'application/pdf' ||
+    file.mimetype === 'application/gzip' ||
+    file.mimetype === 'application/x-gzip'
   ) {
     cb(null, true);
   } else {

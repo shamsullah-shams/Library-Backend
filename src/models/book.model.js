@@ -10,10 +10,6 @@ const bookSchema = mongoose.Schema({
     type: String,
     required: false,
   },
-  authorId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: false,
-  },
   isAvailable: {
     type: Boolean,
     required: true,
@@ -21,7 +17,7 @@ const bookSchema = mongoose.Schema({
   },
   summary: {
     type: String,
-    required: true,
+    required: false,
   },
   image: {
     type: String,
