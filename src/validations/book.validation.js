@@ -5,7 +5,7 @@ const createBook = {
   body: Joi.object().keys({
     name: Joi.string().required(),
     isbn: Joi.string(),
-    authorId: Joi.string().custom(objectId),
+    categoryId: Joi.string().custom(objectId),
     summary: Joi.string(),
     image: Joi.string().required(),
     pdf: Joi.string().required(),
@@ -18,6 +18,7 @@ const getBooks = {
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+    categoryId: Joi.string().custom(objectId),
   }),
 };
 
@@ -35,7 +36,7 @@ const updateBook = {
     .keys({
       name: Joi.string(),
       isbn: Joi.string(),
-      authorId: Joi.string().custom(objectId),
+      categoryId: Joi.string().custom(objectId),
       summary: Joi.string(),
       image: Joi.string(),
       pdf: Joi.string(),

@@ -6,6 +6,10 @@ const bookSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  categoryId: {
+    type: mongoose.Types.ObjectId,
+    required: false,
+  },
   isbn: {
     type: String,
     required: false,

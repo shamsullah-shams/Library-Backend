@@ -10,12 +10,14 @@ const createBook = catchAsync(async (req, res) => {
 });
 
 const getBooks = catchAsync(async (req, res) => {
-  const { name } = req.query;
+  const { name, categoryId } = req.query;
   const filter = {};
   if (name) {
     filter.$or = [{ name: { $regex: name, $options: 'i' } }, { description: { $regex: name, $options: 'i' } }];
   }
-
+  if (categoryId) {
+    filter.categoryId = categoryId;
+  }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await bookService.queryBooks(filter, options);
   return res.send(result);
