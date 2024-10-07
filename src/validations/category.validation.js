@@ -23,7 +23,7 @@ const updateCategory = {
   }),
   body: Joi.object()
     .keys({
-      name: Joi.string().required(),
+      title: Joi.string().required(),
     })
     .min(1),
 };
