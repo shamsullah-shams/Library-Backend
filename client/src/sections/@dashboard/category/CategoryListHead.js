@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-// @mui
 import { Box, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -16,14 +15,7 @@ const visuallyHidden = {
   clip: 'rect(0 0 0 0)',
 };
 
-BorrowalListHead.propTypes = {
-  order: PropTypes.oneOf(['asc', 'desc']),
-  orderBy: PropTypes.string,
-  headLabel: PropTypes.array,
-  onRequestSort: PropTypes.func,
-};
-
-export default function BorrowalListHead({ order, orderBy, headLabel, onRequestSort }) {
+const CategoryListHead = ({ order, orderBy, headLabel, onRequestSort }) => {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -32,11 +24,7 @@ export default function BorrowalListHead({ order, orderBy, headLabel, onRequestS
     <TableHead>
       <TableRow>
         {headLabel.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.alignRight ? 'right' : 'left'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
+          <TableCell key={headCell.id} align={'center'} sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
               hideSortIcon
               active={orderBy === headCell.id}
@@ -53,4 +41,13 @@ export default function BorrowalListHead({ order, orderBy, headLabel, onRequestS
       </TableRow>
     </TableHead>
   );
-}
+};
+
+CategoryListHead.propTypes = {
+  order: PropTypes.oneOf(['asc', 'desc']),
+  orderBy: PropTypes.string,
+  headLabel: PropTypes.array,
+  onRequestSort: PropTypes.func,
+};
+
+export default CategoryListHead;

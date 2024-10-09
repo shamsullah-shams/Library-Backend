@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 import Iconify from '../../../components/iconify';
 import { useAuth } from '../../../hooks/useAuth';
 
-const BorrowalForm = ({
-  handleAddBorrowal,
-  handleUpdateBorrowal,
+const CategoryForm = ({
+  handleAddCategory,
+  handleUpdateCategory,
   isUpdateForm,
   isModalOpen,
   handleCloseModal,
-  setBorrowal,
-  borrowal,
+  setCategory,
+  category,
 }) => {
   const { user, tokens } = useAuth();
 
-  console.log({ 'borrowal from model': borrowal });
+  console.log({ 'category from model': category });
 
   const style = {
     position: 'absolute',
@@ -38,54 +38,19 @@ const BorrowalForm = ({
       <Box sx={style}>
         <Container>
           <Typography variant="h4" textAlign="center" paddingBottom={2} paddingTop={1}>
-            {isUpdateForm ? <span>Update</span> : <span>Add</span>} borrowal
+            {isUpdateForm ? <span>Update</span> : <span>Add</span>} category
           </Typography>
           <Stack spacing={3} paddingY={2}>
             <Grid container spacing={0} sx={{ paddingBottom: '4px' }}>
-              <Grid item xs={12} md={6} paddingRight={1}>
+              <Grid item xs={12} md={12} paddingRight={1}>
                 <TextField
                   fullWidth
-                  name="bookName"
-                  label="Book Name"
+                  name="title"
+                  label="Title"
                   type="text"
                   required
-                  value={borrowal.bookName}
-                  onChange={(event) => setBorrowal({ ...borrowal, bookName: event.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} paddingLeft={1}>
-                <TextField
-                  fullWidth
-                  name="studentName"
-                  label="Student Name"
-                  type="text"
-                  required
-                  value={borrowal.studentName}
-                  onChange={(event) => setBorrowal({ ...borrowal, studentName: event.target.value })}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={0} sx={{ paddingBottom: '4px' }}>
-              <Grid item xs={12} md={6} paddingRight={1}>
-                <TextField
-                  fullWidth
-                  name="faculty"
-                  label="faculty"
-                  type="text"
-                  required
-                  value={borrowal.faculty}
-                  onChange={(event) => setBorrowal({ ...borrowal, faculty: event.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} paddingLeft={1}>
-                <TextField
-                  fullWidth
-                  name="semester"
-                  label="Semester"
-                  type="text"
-                  required
-                  value={borrowal.semester}
-                  onChange={(event) => setBorrowal({ ...borrowal, semester: event.target.value })}
+                  value={category.title}
+                  onChange={(event) => setCategory({ ...category, title: event.target.value })}
                 />
               </Grid>
             </Grid>
@@ -96,7 +61,7 @@ const BorrowalForm = ({
                 <Button
                   size="large"
                   variant="contained"
-                  onClick={isUpdateForm ? handleUpdateBorrowal : handleAddBorrowal}
+                  onClick={isUpdateForm ? handleUpdateCategory : handleAddCategory}
                   startIcon={<Iconify icon="bi:check-lg" />}
                   style={{ marginRight: '12px' }}
                 >
@@ -122,12 +87,12 @@ const BorrowalForm = ({
   );
 };
 
-BorrowalForm.propTypes = {
+CategoryForm.propTypes = {
   isUpdateForm: PropTypes.bool,
   isModalOpen: PropTypes.bool,
   handleCloseModal: PropTypes.func,
-  handleAddBorrowal: PropTypes.func,
-  handleUpdateBorrowal: PropTypes.func,
+  handleAddCategory: PropTypes.func,
+  handleUpdateCategory: PropTypes.func,
 };
 
-export default BorrowalForm;
+export default CategoryForm;

@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 
 import {
   Box,
-  Button,
   Card,
   CircularProgress,
   Container,
@@ -16,17 +15,20 @@ import {
   Popover,
   Stack,
   Typography,
+  InputBase,
 } from '@mui/material';
 import { Alert } from '@mui/lab';
+import { useParams } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { Link } from 'react-router-dom';
 import Label from '../../../components/label';
 import Iconify from '../../../components/iconify';
 import { apiUrl, routes } from '../../../constants';
+import Header from './Header';
+import Nav from './Nav';
 
-// ----------------------------------------------------------------------
+const APP_BAR_MOBILE = 64;
+const APP_BAR_DESKTOP = 92;
 
 const StyledBookImage = styled('img')({
   top: 0,
@@ -75,7 +77,27 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const StyledRoot = styled('div')({
+  display: 'flex',
+  minHeight: '100%',
+  overflow: 'hidden',
+});
+
+const Main = styled('div')(({ theme }) => ({
+  flexGrow: 1,
+  overflow: 'auto',
+  minHeight: '100%',
+  paddingTop: APP_BAR_MOBILE + 24,
+  paddingBottom: theme.spacing(10),
+  [theme.breakpoints.up('lg')]: {
+    paddingTop: APP_BAR_DESKTOP + 24,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+}));
+
 const BookPage = () => {
+  const { categoryId } = useParams();
   const [books, setBooks] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(null);
@@ -87,18 +109,32 @@ const BookPage = () => {
   const handleKeyPress = async (event) => {
     const name = event.target.value;
     if (event.key === 'Enter') {
-      setLoading(true);
-      try {
-        const response = await axios.get(apiUrl(routes.BOOK), {
-          params: { name },
-        });
-        const data = response.data;
-        setBooks(data.results);
-        setTotalPages(data.totalPages);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        toast.error(error.message || 'Something went wrong, please try again');
+      if (name === '') {
+        setLoading(true);
+        try {
+          const response = await axios.get(apiUrl(routes.BOOK));
+          const data = response.data;
+          setBooks(data.results);
+          setTotalPages(data.totalPages);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          toast.error(error.message || 'Something went wrong, please try again');
+        }
+      } else {
+        setLoading(true);
+        try {
+          const response = await axios.get(apiUrl(routes.BOOK), {
+            params: { name },
+          });
+          const data = response.data;
+          setBooks(data.results);
+          setTotalPages(data.totalPages);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          toast.error(error.message || 'Something went wrong, please try again');
+        }
       }
     }
   };
@@ -107,7 +143,7 @@ const BookPage = () => {
 
   const getAllBooks = () => {
     axios
-      .get(apiUrl(routes.BOOK), {})
+      .get(apiUrl(routes.BOOK), { params: { categoryId } })
       .then((response) => {
         // handle success
         const data = response.data;
@@ -133,38 +169,51 @@ const BookPage = () => {
   // Load data on initial page load
   useEffect(() => {
     getAllBooks();
-  }, []);
+  }, [categoryId]);
 
   const previewBook = () => {
     const selectedBook = books.find((element) => element.id === selectedBookId);
     if (selectedBook) {
-      window.open(`http://10.10.12.45:5000/images/${selectedBook?.pdf}`, '_blank');
+      window.open(`/images/${selectedBook?.pdf}`, '_blank');
     } else {
       alert('something went wrong');
     }
   };
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    setLoading(true);
+
+    axios
+      .get(apiUrl(routes.BOOK), {
+        params: {
+          page: value,
+          categoryId,
+        },
+      })
+      .then((response) => {
+        // handle success
+        const data = response.data;
+        setBooks(data.results);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+      })
+      .catch((error) => {
+        // handle error
+        toast.error(error.response.data.message || 'Something went wrong, please try again');
+        setLoading(false); // Ensure loading state is reset on error
+      });
+
+    setLoading(false);
+    setPage(value); // Update the current page state
   };
 
   return (
-    <>
+    <Layout>
       <Helmet>
         <title> Books </title>
       </Helmet>
 
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" marginTop={5}>
-          <Typography variant="h3" sx={{ mb: 5 }}>
-            <img src="../../../assets/libraryLogo.png" alt="logo" width={130} />
-          </Typography>
-          <Typography variant="h3" sx={{ mb: 5 }}>
-            <Link to="/login" className="header-login">
-              <Button variant="outlined">Login</Button>
-            </Link>
-          </Typography>
-        </Stack>
         <Container sx={{ mb: 5 }}>
           <Search>
             <SearchIconWrapper>
@@ -217,7 +266,7 @@ const BookPage = () => {
                       </IconButton>
                     </Label>
 
-                    <StyledBookImage alt={book.name} src={`http://10.10.12.45:5000/images/${book.image}`} />
+                    <StyledBookImage alt={book.name} src={`/images/${book.image}`} />
                   </Box>
 
                   <Stack spacing={1} sx={{ p: 2 }}>
@@ -275,7 +324,19 @@ const BookPage = () => {
           Preview
         </MenuItem>
       </Popover>
-    </>
+    </Layout>
+  );
+};
+
+const Layout = (props) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <StyledRoot>
+      <Header onOpenNav={() => setOpen(true)} />
+      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+      <Main>{props.children}</Main>
+    </StyledRoot>
   );
 };
 

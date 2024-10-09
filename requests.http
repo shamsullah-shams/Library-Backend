@@ -1,0 +1,12 @@
+### create category
+
+POST http://localhost:5001/api/categories
+Content-Type: application/json
+
+{
+    "title": "Physics"
+}
+
+### create category
+
+GET  http://localhost:5001/api/categories

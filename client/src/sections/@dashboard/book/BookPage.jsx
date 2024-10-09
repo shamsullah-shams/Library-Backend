@@ -17,6 +17,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { Alert } from '@mui/lab';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
@@ -79,11 +80,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const BookPage = () => {
   const { user, tokens } = useAuth();
+
+  const { categoryId } = useParams();
+
   // Data
   const [book, setBook] = useState({
     name: '',
     isbn: '',
     summary: '',
+    categoryId: '',
+    categoryName: '',
   });
   const [books, setBooks] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState(null);
@@ -103,11 +109,15 @@ const BookPage = () => {
 
   const getAllBooks = () => {
     axios
-      .get(apiUrl(routes.BOOK), {
-        headers: {
-          Authorization: `Bearer ${tokens.access.token}`,
-        },
-      })
+      .get(
+        apiUrl(routes.BOOK),
+        { params: { categoryId } },
+        {
+          headers: {
+            Authorization: `Bearer ${tokens.access.token}`,
+          },
+        }
+      )
       .then((response) => {
         // handle success
         const data = response.data;
@@ -127,6 +137,7 @@ const BookPage = () => {
     formdata.append('name', book.name);
     formdata.append('isbn', book.isbn);
     formdata.append('summary', book.summary);
+    formdata.append('categoryId', book.categoryId);
     formdata.append('image', image);
     formdata.append('pdf', pdf);
 
@@ -144,7 +155,7 @@ const BookPage = () => {
         clearForm();
       })
       .catch((error) => {
-        toast.error(error.message || 'Something went wrong, please try again');
+        toast.error(error.response.data.message || 'Something went wrong, please try again');
       });
   };
 
@@ -171,7 +182,6 @@ const BookPage = () => {
       })
       .then((response) => {
         toast.success('Book updated');
-
         handleCloseModal();
         handleCloseMenu();
         getAllBooks();
@@ -231,7 +241,7 @@ const BookPage = () => {
   // Load data on initial page load
   useEffect(() => {
     getAllBooks();
-  }, []);
+  }, [categoryId]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -244,18 +254,32 @@ const BookPage = () => {
   const handleKeyPress = async (event) => {
     const name = event.target.value;
     if (event.key === 'Enter') {
-      setLoading(true);
-      try {
-        const response = await axios.get(apiUrl(routes.BOOK), {
-          params: { name },
-        });
-        const data = response.data;
-        setBooks(data.results);
-        setTotalPages(data.totalPages);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        toast.error(error.message || 'Something went wrong, please try again');
+      if (name === '') {
+        setLoading(true);
+        try {
+          const response = await axios.get(apiUrl(routes.BOOK), { params: { categoryId } });
+          const data = response.data;
+          setBooks(data.results);
+          setTotalPages(data.totalPages);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          toast.error(error.response.data.message || 'Something went wrong, please try again');
+        }
+      } else {
+        setLoading(true);
+        try {
+          const response = await axios.get(apiUrl(routes.BOOK), {
+            params: { name },
+          });
+          const data = response.data;
+          setBooks(data.results);
+          setTotalPages(data.totalPages);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          toast.error(error.response.data.message || 'Something went wrong, please try again');
+        }
       }
     }
   };
@@ -263,14 +287,37 @@ const BookPage = () => {
   const previewBook = () => {
     const selectedBook = books.find((element) => element.id === selectedBookId);
     if (selectedBook) {
-      window.open(`http://10.10.12.45:5000/images/${selectedBook?.pdf}`, '_blank');
+      window.open(`/images/${selectedBook?.pdf}`, '_blank');
     } else {
       alert('something went wrong');
     }
   };
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    setLoading(true);
+
+    axios
+      .get(apiUrl(routes.BOOK), {
+        params: {
+          page: value,
+          categoryId,
+        },
+      })
+      .then((response) => {
+        // handle success
+        const data = response.data;
+        setBooks(data.results);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+      })
+      .catch((error) => {
+        // handle error
+        toast.error(error.response.data.message || 'Something went wrong, please try again');
+        setLoading(false); // Ensure loading state is reset on error
+      });
+
+    setLoading(false);
+    setPage(value); // Update the current page state
   };
 
   return (
@@ -351,7 +398,7 @@ const BookPage = () => {
                       </Label>
                     )}
 
-                    <StyledBookImage alt={book.name} src={`http://10.10.12.45:5000/images/${book.image}`} />
+                    <StyledBookImage alt={book.name} src={`/images/${book.image}`} />
                   </Box>
 
                   <Stack spacing={1} sx={{ p: 2 }}>
@@ -381,7 +428,7 @@ const BookPage = () => {
             marginBottom: '50px',
           }}
         >
-          <Pagination count={totalPages} page={page} color="primary" onChange={handlePageChange} />
+          {page && <Pagination count={totalPages} page={page} color="primary" onChange={handlePageChange} />}
         </Grid>
       </Container>
 

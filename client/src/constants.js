@@ -1,18 +1,17 @@
-const backendApiUrl = 'http://10.10.12.45:5000/api';
+const backendApiUrl = '/api';
 
 const routes = {
-  AUTHOR: 'author',
+  BACKUP: 'backup',
   AUTH: 'auth',
   BOOK: 'books',
-  BORROWAL: 'borrowal',
-  GENRE: 'genre',
+  BORROWAL: 'borrowals',
   USER: 'users',
   IMAGES: 'images',
+  CATEGORY: 'categories',
 };
 
 const methods = {
   GET: 'get',
-  GET_ALL: 'getAll',
   POST: 'add',
   PUT: 'update',
   DELETE: 'delete',

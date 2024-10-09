@@ -7,34 +7,13 @@ import BookPage from './sections/@dashboard/book/BookPage';
 import UsersPage from './sections/@dashboard/user/UserPage';
 import { useAuth } from './hooks/useAuth';
 import BookPage2 from './sections/@dashboard/gBooks';
+import Backup from './sections/@dashboard/backup/BackupPage';
+import CategoryPage from './sections/@dashboard/category/CategoryPage';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const { user } = useAuth();
-  const adminRoutes = useRoutes([
-    {
-      path: '/',
-      element: <LibraryApp />,
-      children: [
-        { path: 'books', element: <BookPage /> },
-        { path: 'borrowals', element: <BorrowalPage /> },
-        { path: 'users', element: <UsersPage /> },
-      ],
-    },
-    {
-      path: 'login',
-      element: <LoginPage />,
-    },
-    {
-      path: '404',
-      element: <Page404 />,
-    },
-    {
-      path: '*',
-      element: <Navigate to="/404" replace />,
-    },
-  ]);
 
   const memberRoutes = useRoutes([
     {
@@ -44,6 +23,11 @@ export default function Router() {
         { element: <Navigate to="/books" />, index: true },
         { path: 'books', element: <BookPage /> },
         { path: 'borrowals', element: <BorrowalPage /> },
+        { path: 'category/:categoryId', element: <BookPage /> },
+        { path: 'borrowals', element: <BorrowalPage /> },
+        { path: 'users', element: <UsersPage /> },
+        { path: 'backup', element: <Backup /> },
+        { path: 'manageCategory', element: <CategoryPage /> },
       ],
     },
     {
@@ -66,6 +50,10 @@ export default function Router() {
       element: <BookPage2 />,
     },
     {
+      path: 'category/:categoryId',
+      element: <BookPage2 />,
+    },
+    {
       path: 'login',
       element: <LoginPage />,
     },
@@ -80,9 +68,6 @@ export default function Router() {
   ]);
 
   if (user) {
-    if (user.isAdmin) {
-      return adminRoutes;
-    }
     return memberRoutes;
   }
   return guestRoutes;
