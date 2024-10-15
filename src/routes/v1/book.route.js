@@ -12,7 +12,7 @@ router
   .route('/')
   .get(validate(bookValidation.getBooks), bookController.getBooks)
   .post(
-    auth(),
+    // auth(),
     upload.fields([
       { name: 'image', maxCount: 1 },
       { name: 'pdf', maxCount: 1 },

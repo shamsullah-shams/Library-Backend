@@ -47,17 +47,24 @@ app.use(passport.initialize());
 passport.use('jwt', jwtStrategy);
 
 // limit repeated failed requests to auth endpoints
-if (config.env === 'production') {
-  app.use('/api/auth', authLimiter);
-}
+// if (config.env === 'production') {
+app.use('/api/auth', authLimiter);
+// }
 
+// static routes
+// root request
+app.use(express.static(path.join(__dirname, 'public', 'build')));
+app.use(express.static(path.join(__dirname, 'public', '404')));
 app.use('/images', express.static(path.join(__dirname, 'uploads')));
 // api api routes
 app.use('/api', routes);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'build', 'index.html'));
+});
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
-  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+  res.sendFile(path.join(__dirname, 'public', '404', 'index.html'));
 });
 
 // convert error to ApiError, if needed
